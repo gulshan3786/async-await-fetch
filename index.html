@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSONPlaceholder API Example</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="button">
+      <input type="button" value="<<" onclick="firstp()" id="firstp" />
+      <input type="button" value="<" onclick="prevp()" id="prevp" />
+      <span id="current"></span>
+      <input type="button" value=">" onclick="nextp()" id="nextp" />
+      <input type="button" value=">>" onclick="lastp()" id="lastp" />
+    </div>
+
+    <h1>JSONPlaceholder API Example</h1>
+
+    <table id="postsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Body</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody id="tdata"></tbody>
+    </table>
+
+    <script>
+      // Use innerHTML for table creation
+      var data;
+      var length;
+      var jsondata;
+      var current_page = 1;
+      var itemperpage = 10;
+      var current = document.getElementById("current");
+      var link = "https://jsonplaceholder.typicode.com/posts";
+      async function fetchData() {
+        jsondata = await fetch(link);
+        data = await jsondata.json();
+        console.log(data);
+        length = data.length;
+        console.log(length);
+        display_details();
+        return data;
+        return length;
+      }
+
+      fetchData();
+      //    console.log(length);
+      //    console.log(data);
+      // console.log(y);
+
+      function display_details() {
+        // console.log('sdfds',data);
+        // console.log('sdgdsfgs',length)
+        current.innerHTML = current_page;
+        const last_index = current_page * itemperpage;
+        console.log(last_index);
+        const first_index = last_index - itemperpage;
+        console.log(first_index);
+        const newdata = data.slice(first_index, last_index);
+        let temp = "";
+        console.log("FDSFDS", current_page);
+
+        newdata.map((ele) => {
+          temp += `<tr>
+                <td>${ele.id}</td>
+               <td>${ele.title}</td>
+               <td>${ele.body}</td>
+               <td><button >comment<button></td>
+             </tr>`;
+        });
+        document.getElementById("tdata").innerHTML = temp;
+      }
+
+      const firstp = () => {
+        if (current_page == 1) {
+          document.getElementById("firstp").disabled = true;
+        }
+        document.getElementById("firstp").disabled = false;
+        current_page = 1;
+        display_details();
+      };
+
+      const prevp = () => {
+        if (current_page < 1) {
+         button= document.getElementById("prevp").disabled = true;
+        }
+        else if(current_page >1){
+        current_page--;
+    }
+        document.getElementById("prevp").disabled = false;
+        display_details();
+      };
+
+      const nextp = () => {
+        // console.log('FDSFDS',   current_page);
+        if (current_page * itemperpage >= length) {
+          document.getElementById("nextp").disabled = true;
+        } else if (current_page <= (length / itemperpage) - 1) {
+          current_page++;
+        }
+        // console.log(current_page);
+        document.getElementById("nextp").disabled = false;
+        display_details();
+      };
+
+      const lastp = () => {
+        if (current_page * itemperpage > length) {
+          document.getElementById("lastp").disabled = true;
+        }
+        current_page = length / itemperpage;
+        // console.log(current_page);
+        document.getElementById("lastp").disabled = false;
+        display_details();
+      };
+
+      // async function data_detail(){
+      //       console.log('sdfs',length);
+      //       console.log(data);
+      // }
+      // data_detail();
+
+      // Call the async function
+    </script>
+  </body>
+</html>
